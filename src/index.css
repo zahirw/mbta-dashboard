@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+@theme {
+  /* Primary: Transjakarta blue (#06367c at 800, #174da1 is the site's lighter link blue) */
+  --color-primary-50: #eff4fb;
+  --color-primary-100: #dce7f7;
+  --color-primary-200: #bcd0ee;
+  --color-primary-300: #8fb0e2;
+  --color-primary-400: #5f8bd0;
+  --color-primary-500: #3a69b8;
+  --color-primary-600: #174da1;
+  --color-primary-700: #0f4190;
+  --color-primary-800: #06367c;
+  --color-primary-900: #052b63;
+  --color-primary-950: #031a3d;
+  --color-primary: var(--color-primary-800);
+
+  /* Secondary: white */
+  --color-secondary: #ffffff;
+
+  /* Neutral gray used for section backgrounds on the Transjakarta site */
+  --color-surface: #f1f0f1;
+
+  --animate-modal-in: modal-in 0.18s ease-out;
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

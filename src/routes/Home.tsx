@@ -5,6 +5,7 @@ import type { TripsInfiniteParams, VehiclesFilter } from '../api/mbta/types'
 import Pagination from '../components/Pagination'
 import RouteDropdown from '../components/RouteDropdown'
 import TripDropdown from '../components/TripDropdown'
+import Spinner from '../components/Spinner'
 import VehicleCard from '../components/VehicleCard'
 import VehicleDetailModal from '../components/VehicleDetailModal'
 
@@ -68,6 +69,12 @@ export default function Home() {
     updateSearchParams({ trip: ids.length ? ids.join(',') : null, page: null })
   }
 
+  const hasActiveFilters = routeIds.length > 0 || tripIds.length > 0
+
+  function handleReset() {
+    updateSearchParams({ route: null, trip: null, page: null })
+  }
+
   const selectedVehicleId = searchParams.get('vehicle')
 
   function handleVehicleSelect(id: string) {
@@ -98,32 +105,67 @@ export default function Home() {
 
   return (
     <section>
-      <div className="mb-6 flex flex-wrap items-start gap-4">
-        <div className="w-full sm:w-auto sm:flex-1 sm:max-w-sm">
-          <h2 className="mb-2 text-lg font-semibold">Routes</h2>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-end">
+        <div className="sm:w-72">
+          <h3 className="mb-1 text-xs font-medium text-primary-600">Routes</h3>
           <RouteDropdown value={routeIds} onChange={handleRoutesChange} />
         </div>
 
-        <div className="w-full sm:w-auto sm:flex-1 sm:max-w-sm">
-          <h2 className="mb-2 text-lg font-semibold">Trips</h2>
+        <div className="sm:w-72">
+          <h3 className="mb-1 text-xs font-medium text-primary-600">Trips</h3>
           <TripDropdown value={tripIds} onChange={handleTripsChange} params={tripsParams} />
         </div>
+
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="self-start rounded-md px-2 py-2.5 text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 sm:self-auto"
+          >
+            Reset
+          </button>
+        )}
       </div>
 
       <h1 className="mb-4 text-2xl font-bold">Vehicles</h1>
-      {isPending && <p className="text-slate-500">Loading…</p>}
       {error && <p className="text-red-600">{error.message}</p>}
-      {data && data.data.length === 0 && <p className="text-slate-500">No vehicles found.</p>}
+      {data && data.data.length === 0 && <p className="text-primary-600">No vehicles found.</p>}
 
-      <div
-        className={`grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 ${
-          isPlaceholderData ? 'opacity-50' : ''
-        }`}
-      >
-        {data?.data.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} onSelect={handleVehicleSelect} />
-        ))}
-      </div>
+      {isPending && !error && (
+        <div aria-busy="true">
+          <Spinner label="Loading vehicles…" className="mb-3 text-primary-600" />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
+            {Array.from({ length: Math.min(pageSize, 6) }, (_, i) => (
+              <div key={i} className="h-36 animate-pulse rounded-xl bg-surface" />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {data && (
+        <div className="relative" aria-busy={isPlaceholderData}>
+          {/* Previous results stay visible while the next page or filter loads. */}
+          {isPlaceholderData && (
+            <Spinner
+              label="Loading vehicles…"
+              className="absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-full border border-primary-200 bg-secondary px-3 py-1.5 text-sm text-primary-600 shadow-md"
+            />
+          )}
+          <div
+            className={`grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 ${
+              isPlaceholderData ? 'opacity-50' : ''
+            }`}
+          >
+            {data.data.map((vehicle) => (
+              <VehicleCard key={vehicle.id} vehicle={vehicle} onSelect={handleVehicleSelect} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {data && count.isPending && (
+        <Spinner label="Loading pagination…" className="mt-4 text-sm text-primary-600" />
+      )}
 
       {data && count.data && (
         <Pagination

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import ChevronIcon from './ChevronIcon'
+import Spinner from './Spinner'
 import { useInfiniteRoutes, useRoutesByIds } from '../api/mbta/routes'
 import type { RouteResource, RoutesInfiniteParams } from '../api/mbta/types'
 
@@ -95,25 +97,26 @@ export default function RouteDropdown({ value, onChange, params }: RouteDropdown
         type="button"
         aria-expanded={open}
         onClick={() => (open ? close() : setOpen(true))}
-        className="flex w-full items-center justify-between rounded border border-slate-300 bg-white px-3 py-2 text-left text-sm"
+        className="flex w-full items-center justify-between rounded-md border border-primary-200 bg-secondary px-3 py-2 text-left text-sm transition hover:border-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 aria-expanded:border-primary-500"
       >
-        <span className={`truncate ${value.length ? '' : 'text-slate-400'}`}>
+        <span className={`truncate ${value.length ? '' : 'text-primary-500'}`}>
           {selectionLabel(labels)}
         </span>
-        <span aria-hidden className="ml-2">
-          ▾
-        </span>
+        {value.length > 0 && selected.isPending && (
+          <Spinner label="Loading selected routes…" hideLabel className="ml-2" />
+        )}
+        <ChevronIcon open={open} />
       </button>
 
       {open && (
-        <div className="absolute z-10 mt-1 w-full rounded border border-slate-300 bg-white shadow">
+        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-primary-200 bg-secondary shadow-md">
           <input
             ref={searchRef}
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search routes…"
-            className="w-full border-b border-slate-200 px-3 py-2 text-sm outline-none"
+            className="w-full border-b border-primary-200 px-3 py-2 text-sm outline-none"
           />
 
           <ul ref={listRef} className="max-h-60 overflow-y-auto text-sm">
@@ -122,7 +125,7 @@ export default function RouteDropdown({ value, onChange, params }: RouteDropdown
                 <button
                   type="button"
                   onClick={() => toggle(route.id)}
-                  className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-slate-100"
+                  className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-primary-50"
                 >
                   <input
                     type="checkbox"
@@ -134,7 +137,7 @@ export default function RouteDropdown({ value, onChange, params }: RouteDropdown
                   <span>
                     {routeLabel(route)}
                     {route.attributes.long_name && route.attributes.short_name && (
-                      <span className="block text-xs text-slate-500">
+                      <span className="block text-xs text-primary-600">
                         {route.attributes.long_name}
                       </span>
                     )}
@@ -145,16 +148,18 @@ export default function RouteDropdown({ value, onChange, params }: RouteDropdown
 
             {hasNextPage && <li ref={sentinelRef} className="h-1" aria-hidden />}
             {(isPending || isFetchingNextPage) && (
-              <li className="px-3 py-2 text-slate-500">Loading…</li>
+              <li className="px-3 py-2 text-primary-600">
+                <Spinner label="Loading routes…" />
+              </li>
             )}
             {error && <li className="px-3 py-2 text-red-600">{error.message}</li>}
             {!isPending && !hasNextPage && routes.length === 0 && !error && (
-              <li className="px-3 py-2 text-slate-500">No routes found.</li>
+              <li className="px-3 py-2 text-primary-600">No routes found.</li>
             )}
           </ul>
 
           {value.length > 0 && (
-            <div className="flex items-center justify-between border-t border-slate-200 px-3 py-2 text-xs text-slate-600">
+            <div className="flex items-center justify-between border-t border-primary-200 px-3 py-2 text-xs text-primary-600">
               <span>{value.length} selected</span>
               <button type="button" onClick={() => onChange([])} className="underline">
                 Clear

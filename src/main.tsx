@@ -6,7 +6,6 @@ import { createBrowserRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import './index.css'
 import { queryClient } from './lib/queryClient'
-import About from './routes/About'
 import Home from './routes/Home'
 import Layout from './routes/Layout'
 
@@ -14,10 +13,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: 'about', element: <About /> },
-    ],
+    children: [{ index: true, element: <Home /> }],
   },
 ])
 

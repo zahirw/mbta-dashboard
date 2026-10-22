@@ -22,13 +22,16 @@ function Recenter({ latitude, longitude }: Pick<VehicleMapProps, 'latitude' | 'l
   return null
 }
 
-/** Built by hand because Leaflet's default marker image URLs break under Vite. */
+/**
+ * Built by hand because Leaflet's default marker image URLs break under Vite.
+ * Inline hex values mirror primary-600 / primary-800 in index.css (tokens can't reach this HTML).
+ */
 function createVehicleIcon(bearing: number | null) {
   const arrow =
     bearing === null
       ? ''
       : `<div style="position:absolute;inset:0;transform:rotate(${bearing}deg)">
-          <div style="position:absolute;left:50%;top:-8px;margin-left:-5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid #1d4ed8"></div>
+          <div style="position:absolute;left:50%;top:-8px;margin-left:-5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid #06367c"></div>
         </div>`
 
   return divIcon({
@@ -37,7 +40,7 @@ function createVehicleIcon(bearing: number | null) {
     iconAnchor: [10, 10],
     html: `<div style="position:relative;width:20px;height:20px">
       ${arrow}
-      <div style="position:absolute;inset:3px;border-radius:9999px;background:#2563eb;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3)"></div>
+      <div style="position:absolute;inset:3px;border-radius:9999px;background:#174da1;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3)"></div>
     </div>`,
   })
 }
