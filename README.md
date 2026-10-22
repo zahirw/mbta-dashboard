@@ -6,7 +6,7 @@ Dashboard untuk memantau posisi kendaraan (bus) secara live menggunakan [MBTA V3
 
 Jika tidak memungkinkan untuk setup di lokal, aplikasi dapat langsung dibuka melalui Vercel:
 
-**<https://GANTI-DENGAN-LINK-VERCEL.vercel.app>**
+**<https://transjakarta-zahir.vercel.app/>**
 
 ## Menjalankan di Lokal
 
