@@ -1,6 +1,6 @@
 import type { MbtaApiErrorBody } from './types'
 
-const BASE_URL = 'https://api-v3.mbta.com'
+const BASE_URL = import.meta.env.VITE_MBTA_BASE_URL 
 
 export interface RateLimitInfo {
   limit: number | null
