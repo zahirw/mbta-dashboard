@@ -209,6 +209,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
   const route = data ? findIncluded<RouteAttributes>(data, vehicle?.relationships.route) : null
   const trip = data ? findIncluded<TripAttributes>(data, vehicle?.relationships.trip) : null
   const stop = data ? findIncluded<{ name: string }>(data, vehicle?.relationships.stop) : null
+  const tripId = vehicle?.relationships.trip?.data?.id ?? null
   const directionId = attrs?.direction_id ?? null
   const routeName = route ? `${route.short_name} ${route.long_name}`.trim() : null
 
@@ -355,6 +356,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                 </Section>
 
                 <Section title="Trip">
+                  <Field label="Trip ID">{tripId}</Field>
                   <Field label="Name">{trip?.name}</Field>
                   <Field label="Headsign">{trip?.headsign}</Field>
                   <Field label="Block">{trip?.block_id}</Field>
